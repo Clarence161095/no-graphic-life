@@ -1,6 +1,6 @@
 Giờ hãy tạo giúp tôi 1 Enti Artwork cảm hứng từ:
 ```
-Gấu Cọc Cằn
+
 ```
 
 Enti artwork là một artwork 500x500 pixel. Enti chiếm toàn bộ không của artwork mà không có gì xung quanh (Chỉ có 1 Enti duy nhất ở trong 1 hình ảnh artwork, và chiếm 80%-90% hình ảnh ngoài ra không có gì khác). Nền phải hoàn toàn đen, không có bất kỳ yếu tố bổ sung nào. Enti phải sống động và chi tiết, thể hiện vẻ đẹp của độ sâu màu 64-bit trong hình ảnh 500x500 pixel. (Hãy tham khảo hình ảnh mà tôi upload lên và tạo ra một hình ảnh giống như vậy. Hãy tham khảo Artwork mà tôi đã upload hoặc đã được upload trong phần Knowleadge và cover lại phong cách của nó. Ví dụ: Enti là 'Chuột Dũng Cảm', thì hình ảnh của Enti sẽ là một con 'Chuột Dũng Cảm', không có bất kỳ mô tả nào khác trong hình, chỉ có hình ảnh của con 'Chuột Dũng Cảm' mà thôi. Những Enti là những con vật hoặc đồ vật được Nhân cách hoá... Hãy thật sự sáng tạo trong phong cách của nó.). Hãy thật sự sáng tạo.

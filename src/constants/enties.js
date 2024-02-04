@@ -604,6 +604,689 @@ export const Enties = {
       },
     },
   },
+
+  'Dơi Siêu Âm': {
+    name: 'Dơi Siêu Âm',
+    description:
+      'Dơi Siêu Âm là sinh vật của bóng tối, sử dụng khả năng siêu âm để định vị và tấn công mục tiêu. Sự linh hoạt và tốc độ làm nên thế mạnh không thể ngờ của nó trong bóng tối.',
+    lore: 'Sinh ra từ những hang động sâu thẳm và tối tăm nhất, Dơi Siêu Âm đã phát triển khả năng siêu âm để thích nghi với môi trường sống không ánh sáng. Nó dùng khả năng này để săn mồi và tránh kẻ thù, biến bóng tối thành lợi thế của mình.',
+    stats: {
+      hp: 250,
+      physical_dame: 70,
+      magic_dame: 50,
+      physical_def: 40,
+      magic_def: 60,
+      speed: 90,
+    },
+    type: ['dark', 'sound'],
+    skills: {
+      'Tiếng Vang Huyền Bí': {
+        name: 'Tiếng Vang Huyền Bí',
+        description:
+          'Dơi Siêu Âm phát ra một luồng siêu âm mạnh mẽ, gây sát thương và làm choáng kẻ địch trong phạm vi rộng. (Gây 60 sát thương ma thuật và làm choáng kẻ địch trong 2 lượt.)',
+        target: ['all_enemies'],
+        damage: {
+          physical: 0,
+          magic: 60,
+        },
+        type: ['sound'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ all_enemies }) => {
+          all_enemies.forEach((enemy) => {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.adverseEffect.push('stun');
+              },
+              duration: 2,
+            });
+          });
+        },
+      },
+      'Bức Bình Phong Âm': {
+        name: 'Bức Bình Phong Âm',
+        description:
+          'Tạo ra một bức bình phong âm thanh xung quanh, tăng khả năng né tránh và giảm sát thương nhận vào. (Tăng 20% khả năng né tránh và tăng 15% phòng thủ vật lý và phép.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['sound'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.dodge += self.stats.speed * 0.2;
+              self.current.physical_def += self.stats.physical_def * 0.15;
+              self.current.magic_def += self.stats.magic_def * 0.15;
+            },
+            duration: 3,
+          });
+        },
+      },
+      'Hút Máu': {
+        name: 'Hút Máu',
+        description:
+          'Dơi Siêu Âm tấn công kẻ địch, hồi phục hp dựa vào sát thương gây ra. (Gây 50 sát thương vật lý và hồi phục 25% hp của sát thương gây ra.)',
+        target: ['enemy'],
+        damage: {
+          physical: 50,
+          magic: 0,
+        },
+        type: ['dark'],
+        use: 'active',
+        countdown: 2,
+        effect_callback: ({ self, enemy }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.hp += enemy.current.receive_damage * 0.25;
+            },
+            duration: 0,
+          });
+        },
+      },
+      'Dấu Ấn Bóng Tối': {
+        name: 'Dấu Ấn Bóng Tối',
+        description:
+          'Đánh dấu kẻ địch bằng dấu ấn bóng tối, tăng sát thương nhận vào từ Dơi Siêu Âm. (Tăng 20% sát thương nhận vào từ Dơi Siêu Âm trong 4 lượt.)',
+        target: ['enemy'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['dark'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ enemy }) => {
+          enemy.current.effect.push({
+            effect: ({ enemy }) => {
+              enemy.current.receive_damage_ratio += 0.2;
+            },
+          });
+        },
+      },
+    },
+  },
+  'Sư Tử Sấm Sét': {
+    name: 'Sư Tử Sấm Sét',
+    description:
+      'Sư Tử Sấm Sét là vua của bầu trời đêm, mang theo sức mạnh của sấm sét và bão tố. Với bộ lông phát sáng như tia chớp, nó là biểu tượng của sức mạnh và uy quyền.',
+    lore: 'Sư Tử Sấm Sét từng là một linh hồn của bầu trời, được thần Zeus ban cho sức mạnh vô song. Nó điều khiển sấm sét, bảo vệ vùng đất của mình khỏi mọi kẻ xâm lược, và giúp đỡ những kẻ yếu thế với sức mạnh của mình.',
+    stats: {
+      hp: 300,
+      physical_dame: 75,
+      magic_dame: 50,
+      physical_def: 60,
+      magic_def: 55,
+      speed: 40,
+    },
+    type: ['thunder', 'light'],
+    skills: {
+      'Dấu Ấn Sấm Sét': {
+        name: 'Dấu Ấn Sấm Sét',
+        description:
+          'Sư Tử Sấm Sét triệu hồi sấm sét từ bầu trời, gây sát thương lớn và làm choáng kẻ địch. (Gây 100 sát thương phép và có 30% cơ hội làm choáng kẻ địch trong 2 lượt.)',
+        target: ['enemy'],
+        damage: {
+          physical: 0,
+          magic: 100,
+        },
+        type: ['thunder'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ enemy }) => {
+          if (Math.random() < 0.3) {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.adverseEffect.push('stun');
+              },
+              duration: 2,
+            });
+          }
+        },
+      },
+      'Bão Tố Bảo Vệ': {
+        name: 'Bão Tố Bảo Vệ',
+        description:
+          'Tạo ra một bão tố xung quanh bản thân, giảm sát thương nhận vào và phản đòn sát thương cho kẻ địch. (Giảm 20% sát thương nhận vào và phản lại 30% sát thương nhận vào cho kẻ địch trong 3 lượt.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['thunder'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.defense_bonus += 0.2;
+              self.current.reflect_damage_ratio += 0.3;
+            },
+            duration: 3,
+          });
+        },
+      },
+      'Tiếng Gầm Sấm Sét': {
+        name: 'Tiếng Gầm Sấm Sét',
+        description:
+          'Sư Tử Sấm Sét gầm lên mạnh mẽ, tăng sức mạnh cho bản thân và đồng minh. (Tăng 20% sức mạnh tấn công vật lý và phép thuật cho bản thân và đồng minh trong 4 lượt.)',
+        target: ['self', 'allies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['thunder'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ self, allies }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.physical_dame += self.stats.physical_dame * 0.2;
+              self.current.magic_dame += self.stats.magic_dame * 0.2;
+            },
+            duration: 4,
+          });
+          allies.forEach((ally) => {
+            ally.current.effect.push({
+              effect: ({ ally }) => {
+                ally.current.physical_dame += ally.stats.physical_dame * 0.2;
+                ally.current.magic_dame += ally.stats.magic_dame * 0.2;
+              },
+              duration: 4,
+            });
+          });
+        },
+      },
+      'Sức Mạnh Sét Đánh': {
+        name: 'Sức Mạnh Sét Đánh',
+        description:
+          'Khi hp giảm xuống dưới 50%, Sư Tử Sấm Sét kích hoạt sức mạnh sét đánh, tăng đáng kể tốc độ và sát thương của mình. (Tăng 50% tốc độ và 25% sát thương vật lý và phép thuật trong 3 lượt.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['thunder'],
+        use: 'passive',
+        countdown: 0,
+        effect_callback: ({ self }) => {
+          if (self.current.hp < self.stats.hp * 0.5) {
+            self.current.effect.push({
+              effect: ({ self }) => {
+                self.current.speed += self.stats.speed * 0.5;
+                self.current.physical_dame += self.stats.physical_dame * 0.25;
+                self.current.magic_dame += self.stats.magic_dame * 0.25;
+              },
+              duration: 3,
+            });
+          }
+        },
+      },
+    },
+  },
+  'Mèo Phù Thủy Đêm': {
+    name: 'Mèo Phù Thủy Đêm',
+    description:
+      'Mèo Phù Thủy Đêm là sinh vật bí ẩn của bóng tối, chủ nhân của những phép thuật và bùa chú mạnh mẽ. Với đôi mắt lấp lánh dưới ánh trăng, nó có khả năng nhìn thấu tất cả âm mưu và bóng tối.',
+    lore: 'Sinh ra từ một thế giới ma thuật, Mèo Phù Thủy Đêm là vị pháp sư quyền năng nhất trong đêm tối. Nó dùng khả năng của mình để cân bằng lực lượng giữa ánh sáng và bóng tối, bảo vệ thế giới khỏi các thế lực đen tối.',
+    stats: {
+      hp: 250,
+      physical_dame: 30,
+      magic_dame: 80,
+      physical_def: 40,
+      magic_def: 60,
+      speed: 70,
+    },
+    type: ['dark', 'magic'],
+    skills: {
+      'Ánh Trăng Phù Thủy': {
+        name: 'Ánh Trăng Phù Thủy',
+        description:
+          'Mèo Phù Thủy Đêm triệu hồi ánh trăng bí ẩn, tăng cường phép thuật cho bản thân và đồng minh. (Tăng 25% sát thương phép thuật trong 3 lượt và hồi phục 10% HP mỗi lượt.)',
+        target: ['self', 'allies'],
+        damage: {
+          physical: 0,
+          magic: 25,
+        },
+        type: ['magic'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ self, allies }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.magic_dame += self.stats.magic_dame * 0.25;
+              self.current.hp += self.stats.hp * 0.1;
+            },
+            duration: 3,
+          });
+          allies.forEach((ally) => {
+            ally.current.effect.push({
+              effect: ({ ally }) => {
+                ally.current.magic_dame += ally.stats.magic_dame * 0.25;
+                ally.current.hp += ally.stats.hp * 0.1;
+              },
+              duration: 3,
+            });
+          });
+        },
+      },
+      'Bùa Chú Bóng Đêm': {
+        name: 'Bùa Chú Bóng Đêm',
+        description:
+          'Phủ một lớp bóng tối xung quanh kẻ địch, làm chậm và giảm phòng thủ của chúng. (Giảm 20% tốc độ và phòng thủ vật lý của kẻ địch trong 2 lượt.)',
+        target: ['all_enemies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['dark'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ all_enemies }) => {
+          all_enemies.forEach((enemy) => {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.speed -= enemy.stats.speed * 0.2;
+                enemy.current.physical_def -= enemy.stats.physical_def * 0.2;
+              },
+              duration: 2,
+            });
+          });
+        },
+      },
+      'Mắt Thần': {
+        name: 'Mắt Thần',
+        description:
+          'Mèo Phù Thủy Đêm sử dụng khả năng nhìn xuyên thấu, tiết lộ vị trí và điểm yếu của kẻ địch. (Tăng 30% tỉ lệ chí mạng cho bản thân trong 4 lượt.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['magic'],
+        use: 'passive',
+        countdown: 0,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.crit_rate += 0.3;
+            },
+            duration: 4,
+          });
+        },
+      },
+      'Tiếng Meo Ma Mị': {
+        name: 'Tiếng Meo Ma Mị',
+        description:
+          'Mèo Phù Thủy Đêm phát ra tiếng meo ma mị, làm choáng và sợ hãi kẻ địch. (Có 50% cơ hội làm choáng kẻ địch trong 1 lượt và giảm 20% tốc độ của chúng trong 2 lượt.)',
+        target: ['all_enemies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['dark'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ all_enemies }) => {
+          all_enemies.forEach((enemy) => {
+            if (Math.random() < 0.5) {
+              enemy.current.effect.push({
+                effect: ({ enemy }) => {
+                  enemy.current.adverseEffect.push('stun');
+                  enemy.current.speed -= enemy.stats.speed * 0.2;
+                },
+                duration: 1,
+              });
+            } else {
+              enemy.current.effect.push({
+                effect: ({ enemy }) => {
+                  enemy.current.speed -= enemy.stats.speed * 0.2;
+                },
+                duration: 2,
+              });
+            }
+          });
+        },
+      },
+    },
+  },
+  'Quả Dứa Chiến Binh Mùa Hè': {
+    name: 'Quả Dứa Chiến Binh Mùa Hè',
+    description:
+      'Quả Dứa Chiến Binh Mùa Hè là biểu tượng của sức sống và năng lượng, luôn sẵn sàng cho mọi cuộc phiêu lưu dưới ánh mặt trời rực rỡ của mùa hè.',
+    lore: 'Sinh ra từ khu vườn nhiệt đới thần kỳ, Quả Dứa Chiến Binh Mùa Hè không chỉ mang vẻ đẹp rực rỡ mà còn sở hữu sức mạnh mùa hè, bảo vệ mọi sinh vật trước những thách thức. Với vũ khí là chiếc khiên surfboard và kính râm, nó chứng minh rằng sự vui vẻ và dũng cảm có thể đi đôi với nhau.',
+    stats: {
+      hp: 250,
+      physical_dame: 50,
+      magic_dame: 70,
+      physical_def: 40,
+      magic_def: 60,
+      speed: 30,
+    },
+    type: ['summer', 'tropical'],
+    skills: {
+      'Nắng Gắt': {
+        name: 'Nắng Gắt',
+        description:
+          'Tập trung sức mạnh của mặt trời, gây sát thương phép lớn lên đối thủ và có khả năng làm chúng chói mắt, giảm độ chính xác. (Gây 80 sát thương phép và có 50% cơ hội làm chói mắt đối thủ trong 4 lượt.)',
+        target: ['enemy'],
+        damage: {
+          physical: 0,
+          magic: 80,
+        },
+        type: ['summer'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ enemy }) => {
+          if (Math.random() < 0.5) {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.accuracy -= enemy.stats.accuracy * 0.5;
+              },
+              duration: 4, // 4 turn
+            });
+          }
+        },
+      },
+      'Sóng Biển': {
+        name: 'Sóng Biển',
+        description:
+          'Gọi sóng biển mạnh mẽ, tạo ra một làn sóng lớn làm choáng và gây sát thương vật lý cho nhiều kẻ địch cùng lúc. (Gây 60 sát thương vật lý và có 50% cơ hội làm choáng kẻ địch.)',
+        target: ['all_enemies'],
+        damage: {
+          physical: 60,
+          magic: 0,
+        },
+        type: ['tropical'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ all_enemies }) => {
+          all_enemies.forEach((enemy) => {
+            if (Math.random() < 0.5) {
+              enemy.current.effect.push({
+                effect: ({ enemy }) => {
+                  enemy.current.adverseEffect.push('stun');
+                },
+                duration: 2, // 2 turn
+              });
+            }
+          });
+        },
+      },
+      'Hơi Thở Mùa Hè': {
+        name: 'Hơi Thở Mùa Hè',
+        description:
+          'Phục hồi hp cho bản thân và đồng minh, thể hiện sức sống dồi dào của mùa hè. (Hồi 15% hp cho bản thân và 10% hp cho đồng minh.)',
+        target: ['self', 'allies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['summer'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ self, allies }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.hp += self.stats.hp * 0.15;
+            },
+            duration: 0, // 0 turn
+          });
+          allies.forEach((ally) => {
+            ally.current.effect.push({
+              effect: ({ ally }) => {
+                ally.current.hp += ally.stats.hp * 0.1;
+              },
+              duration: 0, // 0 turn
+            });
+          });
+        },
+      },
+      'Ánh Dương Chói Lọi': {
+        name: 'Ánh Dương Chói Lọi',
+        description:
+          'Tăng cường sức mạnh tấn công và phòng thủ cho bản thân, phản ánh khả năng chiến đấu kiên cường dưới ánh nắng mặt trời. (Tăng 20% sức mạnh tấn công và phòng thủ vật lý và phép trong 4 lượt.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['summer'],
+        use: 'passive',
+        countdown: 0,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.physical_dame += self.stats.physical_dame * 0.2;
+              self.current.magic_dame += self.stats.magic_dame * 0.2;
+              self.current.physical_def += self.stats.physical_def * 0.2;
+              self.current.magic_def += self.stats.magic_def * 0.2;
+            },
+            duration: 4, // 4 turn
+          });
+        },
+      },
+    },
+  },
+  'Khỉ Siêu Trộm': {
+    name: 'Khỉ Siêu Trộm',
+    description:
+      'Khỉ Siêu Trộm là một hình ảnh độc đáo với chiếc đít đỏ nổi bật, mặc giáp và cầm song kiếm, đứng trên thảm bay ma thuật. Nó biểu tượng cho sự nhanh nhẹn, khéo léo và sự tự do, luôn sẵn sàng cho những cuộc phiêu lưu mới.',
+    lore: 'Khỉ Siêu Trộm xuất thân từ một gia tộc trộm cắp huyền thoại, nó đã được huấn luyện từ nhỏ để trở thành tên trộm giỏi nhất. Với khả năng di chuyển linh hoạt trên thảm bay và sử dụng song kiếm với kỹ năng điêu luyện, nó đã thực hiện hàng loạt vụ trộm không tưởng.',
+    stats: {
+      hp: 280,
+      physical_dame: 85,
+      magic_dame: 0,
+      physical_def: 70,
+      magic_def: 60,
+      speed: 90,
+    },
+    type: ['wind', 'stealth'],
+    skills: {
+      'Vũ Đạo Kiếm': {
+        name: 'Vũ Đạo Kiếm',
+        description:
+          'Khỉ Siêu Trộm thực hiện một loạt đòn tấn công nhanh như chớp với song kiếm, gây sát thương lớn và có khả năng làm choáng kẻ địch. (Gây 95 sát thương vật lý và có 25% cơ hội làm choáng kẻ địch.)',
+        target: ['enemy'],
+        damage: {
+          physical: 95,
+          magic: 0,
+        },
+        type: ['wind'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ enemy }) => {
+          if (Math.random() < 0.25) {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.adverseEffect.push('stun');
+              },
+              duration: 2, // 2 turn
+            });
+          }
+        },
+      },
+      'Thoát Thân Ma Thuật': {
+        name: 'Thoát Thân Ma Thuật',
+        description:
+          'Sử dụng thảm bay để thoát khỏi tình thế nguy hiểm, tăng khả năng né tránh cho bản thân trong vòng vài lượt. (Tăng 50% khả năng né tránh trong 4 lượt.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['stealth'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.dodge += self.stats.speed * 0.5;
+            },
+            duration: 4, // 4 turn
+          });
+        },
+      },
+      'Âm Dương Song Kiếm': {
+        name: 'Âm Dương Song Kiếm',
+        description:
+          'Khỉ Siêu Trộm kết hợp năng lượng âm dương từ song kiếm, tạo ra một đòn tấn công mạnh mẽ, gây sát thương lớn và giảm phòng thủ của kẻ địch. (Gây 100 sát thương vật lý và giảm 20% phòng thủ vật lý của kẻ địch.)',
+        target: ['enemy'],
+        damage: {
+          physical: 100,
+          magic: 0,
+        },
+        type: ['wind'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ enemy }) => {
+          enemy.current.effect.push({
+            effect: ({ enemy }) => {
+              enemy.current.physical_def -= enemy.stats.physical_def * 0.2;
+            },
+            duration: 4, // 4 turn
+          });
+        },
+      },
+      'Trộm Cắp Bậc Thầy': {
+        name: 'Trộm Cắp Bậc Thầy',
+        description:
+          'Khỉ Siêu Trộm sử dụng kỹ năng trộm cắp của mình để "vô hiệu hóa" một kỹ năng ngẫu nhiên của kẻ địch trong vài lượt. (Vô hiệu hóa một kỹ năng ngẫu nhiên của kẻ địch trong vài lượt.)',
+        target: ['enemy'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['stealth'],
+        use: 'active',
+        countdown: 6,
+        effect_callback: ({ enemy }) => {
+          const randomSkill = Math.floor(Math.random() * 4);
+          enemy.current.effect.push({
+            effect: ({ enemy }) => {
+              enemy.current.skills[randomSkill].countdown = 10;
+            },
+            duration: 3, // 3 turn
+          });
+        },
+      },
+    },
+  },
+  'Bảo Mẫu Rồng': {
+    name: 'Bảo Mẫu Rồng',
+    description:
+      'Bảo Mẫu Rồng là hình mẫu của sự mạnh mẽ và ân cần, với khả năng bảo vệ và chăm sóc những đứa con rồng nhỏ với lòng dũng cảm và tình thương mến vô bờ bến.',
+    lore: 'Bảo Mẫu Rồng từng là một chiến binh huyền thoại, nay đã trở thành người bảo vệ cho lũ rồng con. Trải qua nhiều thế hệ, cô đã dạy dỗ những đứa trẻ rồng cách chiến đấu và sống sót trong thế giới đầy rẫy nguy hiểm, đồng thời truyền lại cho chúng tinh thần không bao giờ khuất phục.',
+    stats: {
+      hp: 300,
+      physical_dame: 70,
+      magic_dame: 90,
+      physical_def: 80,
+      magic_def: 85,
+      speed: 40,
+    },
+    type: ['fire', 'magic'],
+    skills: {
+      'Bảo Hộ Phép Thuật': {
+        name: 'Bảo Hộ Phép Thuật',
+        description:
+          'Tạo một lá chắn phép thuật bảo vệ bản thân và đồng minh, giảm thiểu sát thương từ kẻ địch. (Tạo giáp ảo bằng 30% hp cho bản thân và đồng minh.)',
+        target: ['self', 'allies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['magic'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ self, allies }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.shield += self.stats.hp * 0.3;
+            },
+            duration: 3,
+          });
+          allies.forEach((ally) => {
+            ally.current.effect.push({
+              effect: ({ ally }) => {
+                ally.current.shield += ally.stats.hp * 0.3;
+              },
+              duration: 3,
+            });
+          });
+        },
+      },
+      'Hỏa Diệm Sư': {
+        name: 'Hỏa Diệm Sư',
+        description:
+          'Phóng một quả cầu lửa mạnh mẽ vào kẻ địch, gây sát thương lớn và có cơ hội thiêu đốt chúng. (Gây 80 sát thương phép và có 20% cơ hội thiêu đốt kẻ địch trong 2 lượt.)',
+        target: ['enemy'],
+        damage: {
+          physical: 0,
+          magic: 80,
+        },
+        type: ['fire'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ enemy }) => {
+          if (Math.random() < 0.2) {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.adverseEffect.push('burn');
+              },
+              duration: 2,
+            });
+          }
+        },
+      },
+      'Lời Ru Của Mẹ': {
+        name: 'Lời Ru Của Mẹ',
+        description:
+          'Sử dụng khả năng chữa lành tự nhiên để hồi phục hp cho bản thân và đồng minh. (Hồi 50 hp cho bản thân và mỗi đồng minh.)',
+        target: ['self', 'allies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['heal'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ self, allies }) => {
+          self.current.hp += 50;
+          allies.forEach((ally) => {
+            ally.current.hp += 50;
+          });
+        },
+      },
+      'Nghị Lực Bất Diệt': {
+        name: 'Nghị Lực Bất Diệt',
+        description:
+          'Khi hp giảm xuống dưới 20%, Bảo Mẫu Rồng sẽ tăng mạnh sức mạnh phòng thủ của mình, phản ánh ý chí kiên cường để bảo vệ lũ rồng con. (Tăng 50% phòng thủ vật lý và phép thuật khi hp dưới 20%.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['heal'],
+        use: 'passive',
+        countdown: 0,
+        effect_callback: ({ self }) => {
+          if (self.current.hp < self.current.hp * 0.2) {
+            self.current.effect.push({
+              effect: ({ self }) => {
+                self.current.physical_def += self.stats.physical_def * 0.5;
+                self.current.magic_def += self.stats.magic_def * 0.5;
+              },
+              duration: 3, // 3 turn
+            });
+          }
+        },
+      },
+    },
+  },
   'Gà Quả Cảm': {
     name: 'Gà Quả Cảm',
     description:
@@ -2090,6 +2773,529 @@ export const Enties = {
             },
             duration: 3,
           });
+        },
+      },
+    },
+  },
+  'Voi Cung Thủ': {
+    name: 'Voi Cung Thủ',
+    description:
+      'Voi Cung Thủ là hình ảnh của sức mạnh và tính nóng nảy, với khả năng sử dụng nỏ một cách thuần thục. Bản lĩnh và sự dũng cảm khiến nó trở thành một chiến binh không thể ngăn cản trên chiến trường.',
+    lore: 'Sinh ra trong một bộ tộc Voi chiến binh cổ xưa, Voi Cung Thủ đã được rèn giũa kỹ năng từ nhỏ. Nó mang trên mình bộ giáp được chế tác từ những vật liệu tự nhiên nhất, kết hợp với bản tính nóng nảy để tạo nên một chiến binh đáng gờm.',
+    stats: {
+      hp: 350,
+      physical_dame: 75,
+      magic_dame: 0,
+      physical_def: 50,
+      magic_def: 30,
+      speed: 40,
+    },
+    type: ['earth', 'fire'],
+    skills: {
+      'Mũi Tên Lửa': {
+        name: 'Mũi Tên Lửa',
+        description:
+          'Bắn một mũi tên lửa mạnh mẽ từ chiếc nỏ, gây sát thương lớn và có khả năng thiêu đốt mục tiêu. (Gây 100 sát thương vật lý và thiêu đốt đối thủ, gây thêm 20 sát thương mỗi lượt trong 3 lượt.)',
+        target: ['enemy'],
+        damage: {
+          physical: 100,
+          magic: 0,
+        },
+        type: ['fire'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ enemy }) => {
+          enemy.current.effect.push({
+            effect: ({ enemy }) => {
+              enemy.current.adverseEffect.push('burn');
+            },
+            duration: 3, // 3 turn
+          });
+        },
+      },
+      'Giận Dữ': {
+        name: 'Giận Dữ',
+        description:
+          'Kích hoạt sự giận dữ, tăng sức mạnh tấn công vật lý cho bản thân. (Tăng 50% sát thương vật lý trong 4 lượt.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['fire'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.physical_dame += self.stats.physical_dame * 0.5;
+            },
+            duration: 4, // 4 turn
+          });
+        },
+      },
+      'Phản Đòn': {
+        name: 'Phản Đòn',
+        description:
+          'Khi bị tấn công, có cơ hội phản đòn gây sát thương cho kẻ địch. (Có 20% khả năng phản đòn, gây 50 sát thương vật lý.)',
+        target: ['enemy'],
+        damage: {
+          physical: 50,
+          magic: 0,
+        },
+        type: ['earth'],
+        use: 'passive',
+        countdown: 0,
+        effect_callback: ({ self, enemy }) => {
+          if (self.isAttacked && Math.random() < 0.2) {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.hp -= 50;
+              },
+              duration: 0, // 0 turn
+            });
+          }
+        },
+      },
+      'Bức Tường Đất': {
+        name: 'Bức Tường Đất',
+        description:
+          'Tạo ra một bức tường đất vững chắc trước mặt, tăng khả năng phòng thủ. (Tăng 30% phòng thủ vật lý trong 3 lượt.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['earth'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.physical_def += self.stats.physical_def * 0.3;
+            },
+            duration: 3, // 3 turn
+          });
+        },
+      },
+    },
+  },
+  'Rùa Pháo Thủ': {
+    name: 'Rùa Pháo Thủ',
+    description:
+      'Rùa Pháo Thủ là biểu tượng của sự vui vẻ và hài hước, với khả năng chiến đấu độc đáo thông qua việc sử dụng pháo tích hợp trên lưng. Không chỉ là một chiến binh, Rùa Pháo Thủ còn là nguồn cảm hứng vui vẻ cho đồng đội.',
+    lore: 'Trong một ngôi làng nhỏ bên bờ biển, Rùa Pháo Thủ được biết đến là người giữ gìn hòa bình với tinh thần lạc quan. Vũ khí của mình không chỉ dùng để chiến đấu mà còn tạo tiếng cười, Rùa Pháo Thủ luôn tìm cách giải quyết mọi tình huống bằng sự thông minh và hài hước.',
+    stats: {
+      hp: 300,
+      physical_dame: 0,
+      magic_dame: 80,
+      physical_def: 70,
+      magic_def: 50,
+      speed: 20,
+    },
+    type: ['water', 'fun'],
+    skills: {
+      'Pháo Confetti': {
+        name: 'Pháo Confetti',
+        description:
+          'Bắn một loạt confetti về phía kẻ địch, gây ra sự hỗn loạn và giảm tốc độ của chúng. (Giảm 20% tốc độ của kẻ địch trong 3 lượt.)',
+        target: ['all_enemies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['fun'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ all_enemies }) => {
+          all_enemies.forEach((enemy) => {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.speed -= enemy.stats.speed * 0.2;
+              },
+              duration: 3, // 3 turn
+            });
+          });
+        },
+      },
+      'Tiếng Cười Nhiễm Khuẩn': {
+        name: 'Tiếng Cười Nhiễm Khuẩn',
+        description:
+          'Sử dụng tiếng cười để nhiễm khuẩn tinh thần, tăng tốc độ và sức mạnh cho đồng minh. (Tăng 15% tốc độ và 10% sát thương cho tất cả đồng minh trong 4 lượt.)',
+        target: ['allies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['fun'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ allies }) => {
+          allies.forEach((ally) => {
+            ally.current.effect.push({
+              effect: ({ ally }) => {
+                ally.current.speed += ally.stats.speed * 0.15;
+                ally.current.physical_dame += ally.stats.physical_dame * 0.1;
+                ally.current.magic_dame += ally.stats.magic_dame * 0.1;
+              },
+              duration: 4, // 4 turn
+            });
+          });
+        },
+      },
+      'Bức Tường Mai': {
+        name: 'Bức Tường Mai',
+        description:
+          'Tạo ra một bức tường mai rắn chắc xung quanh, tăng đáng kể khả năng phòng thủ. (Tạo giáp ảo bằng 25% hp.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['water'],
+        use: 'active',
+        countdown: 6,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.shield += self.stats.hp * 0.25;
+            },
+            duration: 4, // 4 turn
+          });
+        },
+      },
+      'Vũ Điệu Rùa': {
+        name: 'Vũ Điệu Rùa',
+        description:
+          'Thực hiện một điệu nhảy nghịch ngợm, làm giảm sự tập trung của kẻ địch và giảm khả năng phòng thủ của chúng. (Giảm 15% phòng thủ vật lý và phép của kẻ địch trong 3 lượt.)',
+        target: ['all_enemies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['fun'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ all_enemies }) => {
+          all_enemies.forEach((enemy) => {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.physical_def -= enemy.stats.physical_def * 0.15;
+                enemy.current.magic_def -= enemy.stats.magic_def * 0.15;
+              },
+              duration: 3, // 3 turn
+            });
+          });
+        },
+      },
+    },
+  },
+  'Bé Quậy Phá': {
+    name: 'Bé Quậy Phá',
+    description:
+      'Bé Quậy Phá và chiếc xe đẩy của mình tạo nên một cặp đôi nghịch ngợm, không bao giờ làm cho môi trường xung quanh yên bình. Bé mặc chiếc áo choàng siêu anh hùng và luôn tìm cách gây chú ý bằng cách phá phách nhỏ nhặt nhưng đáng yêu.',
+    lore: 'Một ngày kia, chiếc xe đẩy bị phép thuật biến thành một Enti sống động, trở thành người bạn đồng hành không thể tách rời của Bé Quậy Phá. Cùng nhau, họ khám phá thế giới xung quanh bằng những trò nghịch phá không bao giờ kết thúc.',
+    stats: {
+      hp: 250,
+      physical_dame: 20,
+      magic_dame: 60,
+      physical_def: 40,
+      magic_def: 50,
+      speed: 30,
+    },
+    type: ['mischief', 'magic'],
+    skills: {
+      'Bong Bóng Ma Thuật': {
+        name: 'Bong Bóng Ma Thuật',
+        description:
+          'Tạo ra những bong bóng ma thuật vừa để chơi vừa có thể gây nhỏ giọt sát thương phép lên toàn bộ kẻ địch. (Gây 30 sát thương chuẩn cho toàn bộ kẻ địch trong 3 lượt.)',
+        target: ['all_enemies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['magic'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ all_enemies }) => {
+          all_enemies.forEach((enemy) => {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.hp -= 30;
+              },
+              duration: 3, // 3 turn
+            });
+          });
+        },
+      },
+      'Tiếng Cười Dễ Thương': {
+        name: 'Tiếng Cười Dễ Thương',
+        description:
+          'Tiếng cười của bé phát ra làm tăng tinh thần cho đồng minh, giúp họ phục hồi một lượng nhỏ HP. (Hồi 15% hp cho tất cả đồng minh.)',
+        target: ['allies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['mischief'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ allies }) => {
+          allies.forEach((ally) => {
+            ally.current.hp += ally.stats.hp * 0.15;
+          });
+        },
+      },
+      'Chạy Trốn Nhanh Nhẹn': {
+        name: 'Chạy Trốn Nhanh Nhẹn',
+        description:
+          'Sử dụng sự nhanh nhẹn của xe đẩy, tăng khả năng né tránh cho bản thân. (Tăng 25% khả năng né tránh trong 2 lượt.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['mischief'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.dodge += self.current.dodge * 0.25;
+            },
+            duration: 2, // 2 turn
+          });
+        },
+      },
+      'Quả Cầu Năng Lượng': {
+        name: 'Quả Cầu Năng Lượng',
+        description:
+          'Tạo ra một quả cầu năng lượng từ đồ chơi, gây sát thương ma thuật lớn cho một kẻ địch. (Gây 80 sát thương ma thuật cho kẻ địch.)',
+        target: ['enemy'],
+        damage: {
+          physical: 0,
+          magic: 80,
+        },
+        type: ['magic'],
+        use: 'active',
+        countdown: 2,
+        effect_callback: () => {},
+      },
+    },
+  },
+  'Máy Bán Nước Ma Thuật': {
+    name: 'Máy Bán Nước Ma Thuật',
+    description:
+      'Máy Bán Nước Ma Thuật không chỉ cung cấp nước giải khát mà còn phục vụ các phép thuật và vật phẩm phù thủy cho những người phiêu lưu trong thế giới game. Với giao diện hiển thị tươi cười và năng động, nó làm cho mỗi giao dịch trở nên thú vị và đầy bất ngờ.',
+    lore: 'Được phù phép bởi một pháp sư lỗi lạc, Máy Bán Nước Ma Thuật có khả năng tự di chuyển và phục vụ các anh hùng. Mỗi khi người chơi cần tái tạo năng lượng hoặc tìm kiếm vật phẩm quý giá, máy này luôn xuất hiện kịp thời với đầy đủ các loại thức uống và bảo bối phép thuật.',
+    stats: {
+      hp: 500,
+      physical_dame: 0,
+      magic_dame: 0,
+      physical_def: 100,
+      magic_def: 100,
+      speed: 10,
+    },
+    type: ['magic', 'utility'],
+    skills: {
+      'Phục Hồi Năng Lượng': {
+        name: 'Phục Hồi Năng Lượng',
+        description:
+          'Tạo ra một thức uống ma thuật, giúp hồi phục HP và MP cho đồng minh. (Hồi 100 HP cho tất cả đồng minh.)',
+        target: ['allies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['magic'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ allies }) => {
+          allies.forEach((ally) => {
+            ally.current.hp += 100;
+          });
+        },
+      },
+      'Bảo Vệ Ma Pháp': {
+        name: 'Bảo Vệ Ma Pháp',
+        description:
+          'Kích hoạt lá chắn ma pháp bảo vệ bản thân khỏi mọi sát thương trong 1 lượt. (Tạo một lá chắn ảo hấp thụ mọi sát thương nhận vào.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['magic'],
+        use: 'active',
+        countdown: 7,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.shieldInfinity = true;
+            },
+            duration: 1, // 1 turn
+          });
+        },
+      },
+      'Giải Pháp Tốc Độ': {
+        name: 'Giải Pháp Tốc Độ',
+        description:
+          'Phát hành một loại thức uống tăng cường, nâng cao tốc độ di chuyển và tấn công của đồng minh. (Tăng 30% tốc độ cho tất cả đồng minh trong 3 lượt.)',
+        target: ['allies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['utility'],
+        use: 'active',
+        countdown: 6,
+        effect_callback: ({ allies }) => {
+          allies.forEach((ally) => {
+            ally.current.effect.push({
+              effect: ({ ally }) => {
+                ally.current.speed += ally.stats.speed * 0.3;
+              },
+              duration: 3, // 3 turn
+            });
+          });
+        },
+      },
+      'Quà Tặng Bất Ngờ': {
+        name: 'Quà Tặng Bất Ngờ',
+        description:
+          'Ngẫu nhiên phát ra một vật phẩm hoặc phép thuật hỗ trợ, giúp ích cho cuộc phiêu lưu của đồng minh. (Cung cấp một buff ngẫu nhiên cho đồng minh.)',
+        target: ['allies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['magic', 'utility'],
+        use: 'active',
+        countdown: 10,
+        effect_callback: ({ allies }) => {
+          const buffs = ['hp', 'physical_dame', 'magic_dame', 'physical_def', 'magic_def', 'speed'];
+          const randomBuff = buffs[Math.floor(Math.random() * buffs.length)];
+          allies.forEach((ally) => {
+            ally.current.effect.push({
+              effect: ({ ally }) => {
+                ally.current[randomBuff] += ally.stats[randomBuff] * 0.2;
+              },
+              duration: 3, // 3 turn
+            });
+          });
+        },
+      },
+      'Phục Hồi Nước': {
+        name: 'Phục Hồi Nước',
+        description:
+          'Tạo ra một loại nước phục hồi, giúp hồi phục HP cho bản thân. (Hồi 200 HP cho bản thân.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['magic'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ self }) => {
+          self.current.hp += 200;
+        },
+      },
+    },
+  },
+  'Long Quân Đồng Hành': {
+    name: 'Long Quân Đồng Hành',
+    description:
+      'Long Quân Đồng Hành là sự kết hợp hoàn hảo giữa sức mạnh và lòng dũng cảm của một chiến binh rồng bé nhỏ cùng sự bền bỉ và kiên nhẫn của một chú lừa. Dù nhỏ bé, nhưng không hề kém cạnh về sức mạnh và ý chí chiến đấu.',
+    lore: 'Trong thế giới SUMMON ANYTHING, Long Quân Đồng Hành được triệu hồi từ vùng đất huyền thoại, nơi cả rồng và lừa cùng chung sống hòa bình. Chúng kết hợp sức mạnh của mình để bảo vệ và hỗ trợ những chiến binh dũng cảm trên hành trình của họ. Long Quân Đồng Hành không chỉ là biểu tượng của sự dũng cảm mà còn là tình bạn và sự hợp nhất.',
+    stats: {
+      hp: 250,
+      physical_dame: 60,
+      magic_dame: 75,
+      physical_def: 50,
+      magic_def: 65,
+      speed: 40,
+    },
+    type: ['fire', 'earth'],
+    skills: {
+      'Lửa Long Quân': {
+        name: 'Lửa Long Quân',
+        description:
+          'Phun trào ngọn lửa huyền thoại, gây sát thương lớn và thiêu đốt kẻ địch trong vòng bảo vệ. (Gây 100 sát thương phép và thiêu đốt kẻ địch, gây thêm 20 sát thương mỗi lượt trong 3 lượt.)',
+        target: ['enemy'],
+        damage: {
+          physical: 0,
+          magic: 100,
+        },
+        type: ['fire'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ enemy }) => {
+          enemy.current.effect.push({
+            effect: ({ enemy }) => {
+              enemy.current.adverseEffect.push('burn');
+            },
+            duration: 3, // 3 turn
+          });
+        },
+      },
+      'Bảo Vệ Kiên Cường': {
+        name: 'Bảo Vệ Kiên Cường',
+        description:
+          'Sử dụng sức mạnh của lừa để tăng cường phòng thủ, giảm sát thương nhận vào từ mọi nguồn trong một thời gian ngắn. (Tăng 20% phòng thủ vật lý và phép cho bản thân trong 4 lượt.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['earth'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.physical_def += self.stats.physical_def * 0.2;
+              self.current.magic_def += self.stats.magic_def * 0.2;
+            },
+            duration: 4, // 4 turn
+          });
+        },
+      },
+      'Hỏa Kích Nghịch Thiên': {
+        name: 'Hỏa Kích Nghịch Thiên',
+        description:
+          'Kích hoạt sức mạnh tối thượng, gây sát thương cực lớn lên một mục tiêu và các kẻ địch xung quanh nó. (Gây 100 sát thương phép cho mục tiêu và 50 sát thương phép cho kẻ địch xung quanh.)',
+        target: ['enemy', 'around_enemies'],
+        damage: {
+          physical: 0,
+          magic: 100,
+        },
+        type: ['fire', 'earth'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: () => {},
+      },
+      'Phản Đòn Mạnh Mẽ': {
+        name: 'Phản Đòn Mạnh Mẽ',
+        description:
+          'Khi bị tấn công, có cơ hội phản đòn gây sát thương cho kẻ địch. (Có 30% khả năng phản đòn, gây 50 sát thương chuẩn.)',
+        target: ['enemy'],
+        damage: {
+          physical: 50,
+          magic: 0,
+        },
+        type: ['earth'],
+        use: 'passive',
+        countdown: 0,
+        effect_callback: ({ self, enemy }) => {
+          if (self.isAttacked && Math.random() < 0.3) {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.hp -= 50;
+              },
+              duration: 0, // 0 turn
+            });
+          }
         },
       },
     },
