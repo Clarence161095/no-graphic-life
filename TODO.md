@@ -1,0 +1,1 @@
+Khi code logic battle thì nhớ case khi bị tấn công của Éch Ninja

@@ -1,0 +1,618 @@
+Giờ hãy tạo giúp tôi 1 Enti Artwork cảm hứng từ:
+```
+Gấu Cọc Cằn
+```
+
+Enti artwork là một artwork 500x500 pixel. Enti chiếm toàn bộ không của artwork mà không có gì xung quanh (Chỉ có 1 Enti duy nhất ở trong 1 hình ảnh artwork, và chiếm 80%-90% hình ảnh ngoài ra không có gì khác). Nền phải hoàn toàn đen, không có bất kỳ yếu tố bổ sung nào. Enti phải sống động và chi tiết, thể hiện vẻ đẹp của độ sâu màu 64-bit trong hình ảnh 500x500 pixel. (Hãy tham khảo hình ảnh mà tôi upload lên và tạo ra một hình ảnh giống như vậy. Hãy tham khảo Artwork mà tôi đã upload hoặc đã được upload trong phần Knowleadge và cover lại phong cách của nó. Ví dụ: Enti là 'Chuột Dũng Cảm', thì hình ảnh của Enti sẽ là một con 'Chuột Dũng Cảm', không có bất kỳ mô tả nào khác trong hình, chỉ có hình ảnh của con 'Chuột Dũng Cảm' mà thôi. Những Enti là những con vật hoặc đồ vật được Nhân cách hoá... Hãy thật sự sáng tạo trong phong cách của nó.). Hãy thật sự sáng tạo.
+
+Kết quả sẽ là:
+1. Dùng DALLE để tạo ra một sprite cho Enti 500x500 pixel.
+2. Hãy đưa tôi 1 javascript object chứa thông tin cho Enti này với format như bên dưới. (Chú ý hãy cố gắng tuần thủ hết mức có thể với format bên dưới này. Chú ý toàn bộ phải là Tiếng Việt.)
+Bạn sẽ cần đưa tôi một cặp key:value cho Enties bên dưới. Với key là tên của Enti (Hãy cố gắt đặt một cái tên thật ngầu từ gợi ý ở trên.) và value là một object phức tạp chứa thông tin và skills (hãy chú ý làm sao cho hàm effect_callback phải chuẩng và đúng nhất có thể với mô tả của từng skill). Hãy tham khảo ví dụ Enties bên dưới và đưa tôi một cặp key:value của Enties chính xác cho Enti bạn mới tạo.
+const Enties = {
+  'Chuột Dũng Cảm': {
+    name: 'Chuột Dũng Cảm',
+    description:
+      'Chuột Dũng Cảm là biểu tượng của lòng can đảm và quyết tâm, luôn sẵn sàng đối mặt với thách thức dù trong hoàn cảnh khó khăn nhất.',
+    lore: 'Chuột Dũng Cảm là một Enti thuộc hệ Ánh Sáng và Thép. Sinh ra và lớn lên tại vùng đất của những chiến binh huyền thoại, nó đã thừa hưởng tinh thần chiến đấu và sự dũng cảm từ những người đi trước. Tuy nhỏ bé, nhưng Chuột Dũng Cảm sở hữu sức mạnh tinh thần phi thường và khả năng phòng thủ vững chắc.',
+    stats: {
+      hp: 200,
+      physical_dame: 30,
+      magic_dame: 40,
+      physical_def: 25,
+      magic_def: 35,
+      speed: 20,
+    },
+    type: ['light', 'steel'],
+    skills: {
+      'Lửa Dũng Khí': {
+        name: 'Lửa Dũng Khí',
+        description:
+          'Chuột Dũng Cảm thắp lên ngọn lửa trong lòng, tăng sức mạnh tấn công của mình và đồng minh. (Tăng 15% sát thương vật lý và ma thuật trong 4 lượt và xoá bỏ mọi hiệu ứng bất lợi của toàn team.)',
+        target: ['self', 'allies'],
+        damage: {
+          physical: 15,
+          magic: 0,
+        },
+        type: ['light'],
+        use: 'active',
+        countdown: 2, // 2 turn
+        effect_callback: ({ self, allies }) => {
+          self.current.effect.push({
+            effect: ({ self, allies }) => {
+              self.current.physical_dame += self.stats.physical_dame * 0.15;
+              self.current.magic_dame += self.stats.magic_dame * 0.15;
+              allies.forEach((ally) => {
+                ally.current.physical_dame += ally.stats.physical_dame * 0.15;
+                ally.current.magic_dame += ally.stats.magic_dame * 0.15;
+              });
+            },
+            duration: 4, // 4 turn
+          });
+          allies.forEach((ally) => {
+            ally.current.effect.push({
+              effect: ({ self }) => {
+                self.current.physical_dame += self.stats.physical_dame * 0.15;
+                self.current.magic_dame += self.stats.magic_dame * 0.15;
+              },
+              duration: 4, // 4 turn
+            });
+          });
+          allies.forEach((ally) => {
+            ally.current.adverseEffect = [];
+          });
+        },
+      },
+      'Giáp Thép': {
+        name: 'Giáp Thép',
+        description:
+          'Tạo ra một lá chắn thép bảo vệ bản thân, giảm sát thương nhận vào. (Tạo giáp ảo bằng 20% hp.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['steel'],
+        use: 'active',
+        countdown: 3, // 3 turn
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.shield += self.stats.hp * 0.2;
+            },
+            duration: 0, // 0 turn
+          });
+        },
+      },
+      'Kiếm Sĩ Can Trường': {
+        name: 'Kiếm Sĩ Can Trường',
+        description:
+          'Một đòn tấn công mạnh mẽ với kiếm, thể hiện tinh thần không bao giờ khuất phục. (Gây 50 sát thương vật lý.)',
+        target: ['enemy'],
+        damage: {
+          physical: 50,
+          magic: 0,
+        },
+        type: ['steel'],
+        use: 'active',
+        countdown: 1,
+        effect_callback: () => {},
+      },
+      'Tinh Thần Bất Khuất': {
+        name: 'Tinh Thần Bất Khuất',
+        description:
+          'Khi hp giảm xuống dưới 20%, Chuột Dũng Cảm sẽ tăng tốc độ của mình, phản ánh khả năng phản ứng nhanh nhẹn trong tình thế nguy cấp. (Tăng 20% tốc độ và kích hoạt hiệu ứng Kiên Cường xoá bỏ mọi hiệu ứng bất lợi.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['light'],
+        use: 'passive',
+        countdown: 0,
+        effect_callback: ({ self }) => {
+          if (self.current.hp < self.current.hp * 0.2) {
+            self.current.effect.push({
+              effect: ({ self }) => {
+                self.current.speed += self.stats.speed * 0.2;
+                self.current.adverseEffect = [];
+              },
+              duration: 0, // 0 turn
+            });
+          }
+        },
+      },
+    },
+  },
+  'Ếch Ninja': {
+    name: 'Ếch Ninja',
+    description:
+      'Ếch Ninja là biểu tượng của sự nhanh nhẹn và bí ẩn, sở hữu kỹ năng lẻn lút và chiến đấu tuyệt vời.',
+    lore: 'Ếch Ninja là một Enti thuộc hệ Nước và Bóng Tối. Sinh ra trong bóng đêm của khu rừng mưa nhiệt đới, nó đã được huấn luyện bởi những ninja huyền thoại để trở thành một chiến binh vô hình. Ếch Ninja sử dụng môi trường xung quanh để ẩn mình và tập trung vào việc tạo ra những đòn tấn công bất ngờ.',
+    stats: {
+      hp: 220,
+      physical_dame: 35,
+      magic_dame: 45,
+      physical_def: 30,
+      magic_def: 40,
+      speed: 50,
+    },
+    type: ['water', 'dark'],
+    skills: {
+      'Kiếm Thuật Bóng Tối': {
+        name: 'Kiếm Thuật Bóng Tối',
+        description:
+          'Ếch Ninja sử dụng kiếm thuật bóng tối để tấn công, gây sát thương lớn lên kẻ địch. (Gây 60 sát thương vật lý và 30 phép thuật.)',
+        target: ['enemy'],
+        damage: {
+          physical: 60,
+          magic: 30,
+        },
+        type: ['dark'],
+        use: 'active',
+        countdown: 2,
+        effect_callback: () => {},
+      },
+      'Ẩn Mình': {
+        name: 'Ẩn Mình',
+        description:
+          'Ếch Ninja sử dụng kỹ năng để trở nên vô hình trước mắt kẻ địch, tăng khả năng né tránh. (Tăng khả năng né tránh bằng 50% tốc độ của Ếch Ninja trong 4 lượt.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['water'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.dodge += self.stats.speed * 0.5;
+            },
+            duration: 4, // 4 turn
+          });
+        },
+      },
+      'Làn Sương Mù': {
+        name: 'Làn Sương Mù',
+        description:
+          'Tạo ra một làn sương mù dày đặc xung quanh, làm giảm tầm nhìn và sát thương của toàn kẻ địch. (Giảm 20% sát thương phép và vật lý của kẻ địch trong 4 lượt. Có 50% khả năng khiến chúng bị bối rối.)',
+        target: ['all_enemies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['water'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ all_enemies }) => {
+          all_enemies.forEach((enemy) => {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.physical_dame -= enemy.stats.physical_dame * 0.2;
+                enemy.current.magic_dame -= enemy.stats.magic_dame * 0.2;
+                if (Math.random() < 0.5) {
+                  enemy.current.adverseEffect.push('confuse');
+                }
+              },
+              duration: 4, // 4 turn
+            });
+          });
+        },
+      },
+      'Phản Đòn Bóng Tối': {
+        name: 'Phản Đòn Bóng Tối',
+        description:
+          'Khi bị tấn công, Ếch Ninja có cơ hội phản đòn bằng một đòn tấn công bóng tối, gây sát thương và làm chậm kẻ địch. (Gây 40 sát thương vật lý và 20 sát thương phép và làm chậm kẻ địch 10%.)',
+        target: ['enemy'],
+        damage: {
+          physical: 40,
+          magic: 20,
+        },
+        type: ['dark'],
+        use: 'passive',
+        countdown: 0,
+        effect_callback: ({ self, enemy }) => {
+          if (self.current.isAttacked === true) {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.speed -= enemy.stats.speed * 0.1;
+              },
+              duration: 4, // 4 turn
+            });
+          }
+        },
+      },
+    },
+  },
+  'Quỷ Lùn': {
+    name: 'Quỷ Lùn',
+    description:
+      'Quỷ Lùn là hình ảnh của sự mạnh mẽ và quyết liệt, với khả năng chiến đấu và phép thuật đặc biệt, bất chấp kích thước nhỏ bé của mình.',
+    lore: 'Sinh ra từ vùng đất đầy lửa và sulfur, Quỷ Lùn là một Enti thuộc hệ Lửa và Bóng Tối. Với sức mạnh được rèn giũa qua hàng trăm năm, nó có khả năng chịu đựng và sức mạnh phi thường, cùng với khả năng sử dụng phép thuật đen tối.',
+    stats: {
+      hp: 250,
+      physical_dame: 40,
+      magic_dame: 60,
+      physical_def: 30,
+      magic_def: 45,
+      speed: 25,
+    },
+    type: ['fire', 'dark'],
+    skills: {
+      'Hỏa Ngục': {
+        name: 'Hỏa Ngục',
+        description:
+          'Quỷ Lùn triệu hồi ngọn lửa từ địa ngục, gây sát thương lớn lên kẻ địch ở cạnh bên. (Gây 70 sát thương phép và thiêu đốt kẻ địch xung quanh trong 4 lượt.)',
+        target: ['around_enemies'],
+        damage: {
+          physical: 0,
+          magic: 70,
+        },
+        type: ['fire'],
+        use: 'active',
+        countdown: 2,
+        effect_callback: ({ around_enemies }) => {
+          around_enemies.forEach((enemy) => {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.adverseEffect.push('burn');
+              },
+              duration: 4, // 4 turn
+            });
+          });
+        },
+      },
+      'Bóng Đêm Bất Tận': {
+        name: 'Bóng Đêm Bất Tận',
+        description:
+          'Bao phủ mục tiêu trong bóng tối, làm chậm và suy yếu chúng. (Giảm 10% tốc độ và 15% sức tấn công vật lý của kẻ địch.)',
+        target: ['around_enemies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['dark'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ around_enemies }) => {
+          around_enemies.forEach((enemy) => {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.speed -= enemy.stats.speed * 0.1;
+                enemy.current.physical_dame -= enemy.stats.physical_dame * 0.15;
+              },
+              duration: 4, // 4 turn
+            });
+          });
+        },
+      },
+      'Ánh Sáng Lấp Lánh': {
+        name: 'Ánh Sáng Lấp Lánh',
+        description:
+          'Quỷ Lùn sử dụng ánh sáng lấp lánh để mê hoặc và làm lạc hướng kẻ địch, tạo cơ hội tấn công. (80% Làm choáng kẻ địch trong 3 lượt.)',
+        target: ['enemy'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['dark'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ enemy }) => {
+          if (Math.random() < 0.8) {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.adverseEffect.push('stun');
+              },
+              duration: 3, // 3 turn
+            });
+          }
+        },
+      },
+    },
+  },
+  'Heo Hải Tặc': {
+    name: 'Heo Hải Tặc',
+    description:
+      'Heo Hải Tặc là thủ lĩnh dũng cảm của một đoàn hải tặc, nổi tiếng với lòng dũng cảm và tình yêu với những chuyến phiêu lưu trên biển cả. Luôn tìm kiếm kho báu và sẵn sàng đối đầu với mọi thách thức.',
+    lore: 'Sinh ra trên một hòn đảo hẻo lánh, từ nhỏ Heo Hải Tặc đã mơ ước trở thành hải tặc vĩ đại nhất. Với bản lĩnh và trí thông minh, nó nhanh chóng trở thành thủ lĩnh của đoàn hải tặc, dẫn dắt đồng đội đi khắp các vùng biển, tìm kiếm kho báu và khám phá những bí mật của đại dương.',
+    stats: {
+      hp: 300,
+      physical_dame: 70,
+      magic_dame: 0,
+      physical_def: 50,
+      magic_def: 30,
+      speed: 60,
+    },
+    type: ['adventure', 'water'],
+    skills: {
+      'Chém Gió Hải Tặc': {
+        name: 'Chém Gió Hải Tặc',
+        description:
+          'Một đòn chém mạnh mẽ với thanh kiếm hải tặc, thể hiện sự dũng mãnh và không sợ hãi. (Gây 80 sát thương vật lý.)',
+        target: ['enemy'],
+        damage: {
+          physical: 80,
+          magic: 0,
+        },
+        type: ['adventure'],
+        use: 'active',
+        countdown: 2,
+        effect_callback: () => {},
+      },
+      'Hô Hào Thủy Thủ': {
+        name: 'Hô Hào Thủy Thủ',
+        description:
+          'Tăng cường tinh thần cho đồng đội, hô hào họ chiến đấu mạnh mẽ hơn. (Tăng 20% sức mạnh tấn công vật lý cho đồng minh.)',
+        target: ['allies'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['adventure'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ allies }) => {
+          allies.forEach((ally) => {
+            ally.current.effect.push({
+              effect: ({ ally }) => {
+                ally.current.physical_dame += ally.stats.physical_dame * 0.2;
+              },
+              duration: 4, // 4 turn
+            });
+          });
+        },
+      },
+      'Phiêu Lưu Mạo Hiểm': {
+        name: 'Phiêu Lưu Mạo Hiểm',
+        description:
+          'Heo Hải Tặc dùng trí tuệ và sự nhanh nhẹn của mình để né tránh các cuộc tấn công, tăng khả năng né tránh. (Tăng 25% khả năng né tránh.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['adventure'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.dodge += self.current.dodge * 0.25;
+            },
+            duration: 4, // 4 turn
+          });
+        },
+      },
+      'Lời Nguyền Biển Cả': {
+        name: 'Lời Nguyền Biển Cả',
+        description:
+          'Gọi lời nguyền của biển cả để làm chậm và yếu đi kẻ địch, giảm tốc độ và sức mạnh tấn công của chúng. (Giảm 10% tốc độ và 15% sức mạnh tấn công của kẻ địch.)',
+        target: ['enemy'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['water'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ enemy }) => {
+          enemy.current.effect.push({
+            effect: ({ enemy }) => {
+              enemy.current.speed -= enemy.stats.speed * 0.1;
+              enemy.current.physical_dame -= enemy.stats.physical_dame * 0.15;
+            },
+            duration: 4, // 4 turn
+          });
+        },
+      },
+    },
+  },
+  'Lửng Mật Vô Đối': {
+    name: 'Lửng Mật Vô Đối',
+    description:
+      'Lửng Mật Vô Đối là chiến binh không biết đến sợ hãi, luôn chiến đấu với bản lĩnh và sự dũng mãnh.',
+    lore: 'Trên chiến trường, Lửng Mật Vô Đối nổi tiếng với bộ giáp tựa tổ ong cứng cáp và kiếm mật ong lấp lánh. Qua bao trận mạc, nó không những không khuất phục mà còn trở nên càng thêm mạnh mẽ, tựa như giáp ong của mình, luôn sẵn sàng chiến đấu cho lẽ phải.',
+    stats: {
+      hp: 300,
+      physical_dame: 80,
+      magic_dame: 25,
+      physical_def: 60,
+      magic_def: 40,
+      speed: 25,
+    },
+    type: ['earth', 'honey'],
+    skills: {
+      'Kiếm Mật Ong': {
+        name: 'Kiếm Mật Ong',
+        description:
+          'Lửng Mật Vô Đối sử dụng kiếm mật ong của mình để tấn công, gây sát thương lớn và có khả năng làm chậm đối thủ. (Gây 90 sát thương vật lý và giảm 10% tốc độ đối thủ.)',
+        target: ['enemy'],
+        damage: {
+          physical: 90,
+          magic: 0,
+        },
+        type: ['earth'],
+        use: 'active',
+        countdown: 2,
+        effect_callback: ({ enemy }) => {
+          enemy.current.effect.push({
+            effect: ({ enemy }) => {
+              enemy.current.speed -= enemy.stats.speed * 0.1;
+            },
+            duration: 4, // 4 turn
+          });
+        },
+      },
+      'Giáp Tổ Ong': {
+        name: 'Giáp Tổ Ong',
+        description:
+          'Bảo vệ bản thân với bộ giáp tổ ong cứng cáp, giảm sát thương nhận vào từ mọi nguồn. (Tạo giáp ảo bằng 30% hp.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['earth'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.shield += self.stats.hp * 0.3;
+            },
+            duration: 4, // 4 turn
+          });
+        },
+      },
+      'Đòn Tấn Công Vô Đối': {
+        name: 'Đòn Tấn Công Vô Đối',
+        description:
+          'Một cú đấm mạnh mẽ, thể hiện sức mạnh vô đối của Lửng Mật, có khả năng gây choáng. (Gây 100 sát thương vật lý và có 15% cơ hội làm choáng đối thủ.)',
+        target: ['enemy'],
+        damage: {
+          physical: 100,
+          magic: 0,
+        },
+        type: ['earth'],
+        use: 'active',
+        countdown: 1,
+        effect_callback: ({ enemy }) => {
+          if (Math.random() < 0.15) {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.adverseEffect.push('stun');
+              },
+              duration: 3, // 3 turn
+            });
+          }
+        },
+      },
+      'Bất Diệt': {
+        name: 'Bất Diệt',
+        description:
+          'Khi hp giảm xuống dưới 25%, Lửng Mật Vô Đối sẽ hồi phục một lượng hp nhất định, phản ánh khả năng phục hồi kỳ diệu của nó, giảm sát thương nhận vào. (Hồi 20% hp và tăng phòng thủ vật lý và phép thêm 20%.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['honey'],
+        use: 'passive',
+        countdown: 0,
+        effect_callback: ({ self }) => {
+          if (self.current.hp < self.stats.hp * 0.25) {
+            self.current.effect.push({
+              effect: ({ self }) => {
+                self.current.hp += self.stats.hp * 0.2;
+                self.current.physical_def += self.stats.physical_def * 0.2;
+                self.current.magic_def += self.stats.magic_def * 0.2;
+              },
+              duration: 0, // 0 turn
+            });
+          }
+        },
+      },
+    },
+  },
+  'Quala Nhi': {
+    name: 'Quala Nhi',
+    description:
+      'Quala Nhi là một chiến binh dũng cảm với bàn tay cụt, vẫn không ngừng chiến đấu bất chấp mọi thách thức. Mang theo thanh kiếm siêu bự, biểu tượng của sức mạnh vô biên, cùng với người bạn đồng hành là một con chim điêu lớn, Quala Nhi sẵn sàng đối mặt với bất kỳ kẻ thù nào.',
+    lore: 'Sau một trận chiến ác liệt, Quala Nhi đã mất đi bàn tay của mình nhưng không vì thế mà gục ngã. Qua quá trình rèn luyện gian khổ, nó đã trở nên mạnh mẽ hơn bao giờ hết. Con chim điêu lớn không chỉ là người bạn đồng hành mà còn là biểu tượng của tinh thần không khuất phục trước số phận.',
+    stats: {
+      hp: 350,
+      physical_dame: 100,
+      magic_dame: 0,
+      physical_def: 80,
+      magic_def: 60,
+      speed: 45,
+    },
+    type: ['earth', 'wind'],
+    skills: {
+      'Đạn Chỉ Thần Công': {
+        name: 'Đạn Chỉ Thần Công',
+        description:
+          'Quala Nhi tung ta một cú chưởng mạnh mẽ, gây sát thương lớn lên kẻ địch. (Gây 120 sát thương vật lý.)',
+        target: ['enemy'],
+        damage: {
+          physical: 120,
+          magic: 0,
+        },
+        type: ['earth'],
+        use: 'active',
+        countdown: 3,
+        effect_callback: () => {},
+      },
+      'Bảo Vệ Bầu Trời': {
+        name: 'Bảo Vệ Bầu Trời',
+        description:
+          'Quala Nhi và chim điêu lớn phối hợp tạo ra một lớp lá chắn, giảm sát thương nhận vào từ kẻ địch. (Tạo giáp ảo bằng 25% hp cho bản thân.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['wind'],
+        use: 'active',
+        countdown: 5,
+        effect_callback: ({ self }) => {
+          self.current.effect.push({
+            effect: ({ self }) => {
+              self.current.shield += self.stats.hp * 0.25;
+            },
+            duration: 0, // 0 turn
+          });
+        },
+      },
+      'Cuộc Tấn Công Từ Trên Cao': {
+        name: 'Cuộc Tấn Công Từ Trên Cao',
+        description:
+          'Chim điêu lớn lao xuống từ bầu trời, gây sát thương lớn và có khả năng làm choáng kẻ địch với một cú đánh mạnh mẽ. (Gây 80 sát thương vật lý và có 20% cơ hội làm choáng kẻ địch.)',
+        target: ['enemy'],
+        damage: {
+          physical: 80,
+          magic: 0,
+        },
+        type: ['wind'],
+        use: 'active',
+        countdown: 4,
+        effect_callback: ({ enemy }) => {
+          if (Math.random() < 0.2) {
+            enemy.current.effect.push({
+              effect: ({ enemy }) => {
+                enemy.current.adverseEffect.push('stun');
+              },
+              duration: 2, // 2 turn
+            });
+          }
+        },
+      },
+      'Tinh Thần Chiến Binh': {
+        name: 'Tinh Thần Chiến Binh',
+        description:
+          'Khi hp giảm xuống dưới 30%, Quala Nhi tăng đáng kể sức mạnh tấn công vật lý của mình, phản ánh ý chí kiên cường chiến đấu đến cùng. (Tăng 30% sức mạnh tấn công vật lý trong 3 lượt.)',
+        target: ['self'],
+        damage: {
+          physical: 0,
+          magic: 0,
+        },
+        type: ['earth'],
+        use: 'passive',
+        countdown: 0,
+        effect_callback: ({ self }) => {
+          if (self.current.hp < self.stats.hp * 0.3) {
+            self.current.effect.push({
+              effect: ({ self }) => {
+                self.current.physical_dame += self.stats.physical_dame * 0.3;
+              },
+              duration: 3, // 3 turn
+            });
+          }
+        },
+      },
+    },
+  },
+}
